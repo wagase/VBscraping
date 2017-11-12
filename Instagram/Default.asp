@@ -38,13 +38,13 @@
 				num1 = InStr(key,"https://scontent-nrt1-1")
 				num2 = InStr(key,".jpg") + 4
 				str2 = Mid(key,num1,num2-num1)
-				Call tempDic.Add(tempDic.Count,"<img src="""&str2&"""")
+				Call tempDic.Add(tempDic.Count,"<img src="""&str2&""">")
 				key = Right(key,Len(key)-num2)
 			Loop
 		End If
 	Next
 	Set regEx = Nothing
-	response.write Join(tempDic.Items(),">")
+	response.write Join(tempDic.Items(),"")
 	If Err.Number <> 0 Then
 		Response.write Err.Number & Err.Description & Err.Erl
 		Err.Clear()
