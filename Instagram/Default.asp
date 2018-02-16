@@ -130,7 +130,7 @@
 			If matches2.Count <> 0 Then
 				For i = 0 To matches2.Count - 1
 					strjpg = matches2(i).Value
-					If Instr(strjpg,"/e35/") > 0 And Instr(strjpg,"640x640") = 0 And Instr(strjpg,"750x750") = 0 Then
+					If Not Len(strjpg)>170 And Instr(strjpg,"/e35/") > 0 And Instr(strjpg,"640x640") = 0 And Instr(strjpg,"750x750") = 0 Then
 						If Not tempDicjpg.Exists(strjpg) Then
 							Call tempDicjpg.Add(strjpg,"")
 							Call tempDic.Add(tempDic.Count,"<img src="""&strjpg&""">")
