@@ -42,7 +42,7 @@
 
 	' 正規表現3 動画用
 	Set regEx3 = CreateObject("VBScript.RegExp")
-	regEx3.Pattern = "video_url"":""https://scontent-nrt1-1\.cdninstagram\.com/vp.*\.mp4"
+	regEx3.Pattern = "video_url"":""https://scontent-nrt1-1\.cdninstagram\.com/vp.*?\.mp4"
 	regEx3.IgnoreCase = False ' 大文字と小文字を区別しない
 	regEx3.Global = True ' 文字列全体を検索
 
