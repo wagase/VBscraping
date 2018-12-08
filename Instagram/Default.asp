@@ -19,7 +19,7 @@
 </form>
 <%
 ' *************************** ***************************
-' Instagramスクレイピング 仕様 20180314
+' Instagramスクレイピング 仕様 20181209
 ' *************************** ***************************
 
 	If instagramId="" Then Response.End
@@ -39,6 +39,12 @@
 	regEx2.Pattern = "https://scontent-nrt1-1\.cdninstagram\.com.*?\.jpg"
 	regEx2.IgnoreCase = False ' 大文字と小文字を区別しない
 	regEx2.Global = True ' 文字列全体を検索
+
+	' 正規表現2x 画像用
+	Set regEx2x = CreateObject("VBScript.RegExp")
+	regEx2x.Pattern = "https://scontent-nrt1-1\.cdninstagram\.com.*?com"""
+	regEx2x.IgnoreCase = False ' 大文字と小文字を区別しない
+	regEx2x.Global = True ' 文字列全体を検索
 
 	' 正規表現3 動画用
 	Set regEx3 = CreateObject("VBScript.RegExp")
@@ -75,12 +81,12 @@
 
 	Set regEx = Nothing
 	Set regEx2 = Nothing
-	Set regEx3 = Nothing
-
+	Set regEx4 = Nothing
+	Set regEx4 = Nothing
 	Set matches = Nothing
 	Set matches2 = Nothing
 	Set matches3 = Nothing
-
+	Set matches4 = Nothing
 	Set tempDicjpg = Nothing
 	Set tempDicmp4 = Nothing
 
@@ -91,6 +97,7 @@
 	' // 概要: サイトへアクセスして結果を辞書に入れる
 	' //=================================================================
 	Private Sub addDicHtmlSimple(byval codeId)
+		On error resume next
 		Dim resText2
 		Dim i,j
 		Dim strjpg,strmp4
@@ -99,10 +106,11 @@
 		If matches2.Count <> 0 Then
 			For i = 0 To matches2.Count - 1
 				strjpg = matches2(i).Value
-				If Not Len(strjpg)>170 And Instr(strjpg,"/e35/") > 0 And Instr(strjpg,"640x640") = 0 And Instr(strjpg,"750x750") = 0 Then
+				If getStatusXMLHTTP(strjpg) = "403" Then strjpg = strjpg & "?_nc_ht=scontent-nrt1-1.cdninstagram.com"
+				If Not Len(strjpg)>210 And Instr(strjpg,"/e35/") > 0 And Instr(strjpg,"640x640") = 0 And Instr(strjpg,"750x750") = 0 Then
 					If Not tempDicjpg.Exists(strjpg) Then
 						Call tempDicjpg.Add(strjpg,"")
-						response.Write "<img src="""&strjpg&""">"
+						response.Write "<img src="""&strjpg&""" title="""&strjpg&""">"
 						response.Flush
 					End If
 				End If
@@ -138,6 +146,25 @@
 		Set xmlhttp = Nothing
 
 		getXMLHTTP = resText
+	End Function
+
+	' //=================================================================
+	' // 関数: getStatusXMLHTTP(byval url)
+	' // 概要: サイトへアクセスして結果を返す
+	' //=================================================================
+	Private Function getStatusXMLHTTP(byval url)
+
+		Dim xmlhttp,resText
+		Set xmlhttp = Server.Createobject("MSXML2.ServerXMLHTTP")
+		xmlhttp.Open "GET",url, False
+		xmlhttp.SetRequestHeader "Content-Type", "application/x-www-form-urlencoded"
+		On Error Resume Next
+		xmlhttp.Send ""
+		On Error Goto 0
+		resText = xmlhttp.status
+		Set xmlhttp = Nothing
+
+		getStatusXMLHTTP = resText
 	End Function
 %>
 </body>
