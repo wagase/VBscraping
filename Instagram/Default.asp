@@ -111,8 +111,8 @@
 		If matches3.Count <> 0 Then
 			For i = 0 To matches3.Count - 1
 				strmp4 = Right(matches3(i).Value,Len(matches3(i).Value)-12)
-				If getStatusXMLHTTP(strmp4) = "403" Then strmp4 = strmp4 & "?_nc_ht=scontent-nrt1-1.cdninstagram.com"
-				If getStatusXMLHTTP(strmp4) = "403" Then strmp4 = strmp4 & "?_nc_ht=scontent-sea1-1.cdninstagram.com"
+				If getStatusXMLHTTP(strmp4) = "403" Then strmp4 = Right(matches3(i).Value,Len(matches3(i).Value)-12) & "?_nc_ht=scontent-nrt1-1.cdninstagram.com"
+				If getStatusXMLHTTP(strmp4) = "403" Then strmp4 = Right(matches3(i).Value,Len(matches3(i).Value)-12) & "?_nc_ht=scontent-sea1-1.cdninstagram.com"
 				If Not tempDicmp4.Exists(strmp4) Then
 					Call tempDicmp4.Add(strmp4,"")
 					response.Write "<video autoplay loop muted controls><source src="""&strmp4&""" type=""video/mp4"" /></video>"
