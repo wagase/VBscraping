@@ -2,7 +2,7 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-	<title>InstagramGet(201803仕様)</title>
+	<title>InstagramGet(20190214仕様)</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 </head>
 <body>
@@ -19,7 +19,7 @@
 </form>
 <%
 ' *************************** ***************************
-' Instagramスクレイピング 仕様 20181209
+' Instagramスクレイピング 仕様 20190214
 ' *************************** ***************************
 
 	If instagramId="" Then Response.End
@@ -30,25 +30,19 @@
 
 	' 正規表現1 URLcode取得用
 	Set regEx = CreateObject("VBScript.RegExp")
-	regEx.Pattern = """shortcode"":"".*?"",""edge_"
+	regEx.Pattern = """shortcode"":"".*?"","""
 	regEx.IgnoreCase = False ' 大文字と小文字を区別しない
 	regEx.Global = True ' 文字列全体を検索
 
 	' 正規表現2 画像用
 	Set regEx2 = CreateObject("VBScript.RegExp")
-	regEx2.Pattern = "https://scontent-nrt1-1\.cdninstagram\.com.*?\.jpg"
+	regEx2.Pattern = "https://scontent-.*?\.jpg"
 	regEx2.IgnoreCase = False ' 大文字と小文字を区別しない
 	regEx2.Global = True ' 文字列全体を検索
 
-	' 正規表現2x 画像用
-	Set regEx2x = CreateObject("VBScript.RegExp")
-	regEx2x.Pattern = "https://scontent-nrt1-1\.cdninstagram\.com.*?com"""
-	regEx2x.IgnoreCase = False ' 大文字と小文字を区別しない
-	regEx2x.Global = True ' 文字列全体を検索
-
 	' 正規表現3 動画用
 	Set regEx3 = CreateObject("VBScript.RegExp")
-	regEx3.Pattern = "video_url"":""https://scontent-nrt1-1\.cdninstagram\.com/vp.*?\.mp4"
+	regEx3.Pattern = "video_url"":""https://scontent-.*?\.mp4"
 	regEx3.IgnoreCase = False ' 大文字と小文字を区別しない
 	regEx3.Global = True ' 文字列全体を検索
 
@@ -64,10 +58,6 @@
 	Dim resText1
 	Dim i
 
-	' なぜか最初の数回は失敗するのでキャッシング用？に2回アクセス
-	For i=0 To 2
-		test = getXMLHTTP(baseurl)
-	Next
 	resText1 = getXMLHTTP(baseurl)
 	Set matches = regEx.Execute(resText1)
 	If matches.Count <> 0 Then
@@ -106,7 +96,8 @@
 		If matches2.Count <> 0 Then
 			For i = 0 To matches2.Count - 1
 				strjpg = matches2(i).Value
-				If getStatusXMLHTTP(strjpg) = "403" Then strjpg = strjpg & "?_nc_ht=scontent-nrt1-1.cdninstagram.com"
+				If getStatusXMLHTTP(strjpg) = "403" Then strjpg = matches2(i).Value & "?_nc_ht=scontent-nrt1-1.cdninstagram.com"
+				If getStatusXMLHTTP(strjpg) = "403" Then strjpg = matches2(i).Value & "?_nc_ht=scontent-sea1-1.cdninstagram.com"
 				If Not Len(strjpg)>210 And Instr(strjpg,"/e35/") > 0 And Instr(strjpg,"640x640") = 0 And Instr(strjpg,"750x750") = 0 Then
 					If Not tempDicjpg.Exists(strjpg) Then
 						Call tempDicjpg.Add(strjpg,"")
@@ -120,6 +111,8 @@
 		If matches3.Count <> 0 Then
 			For i = 0 To matches3.Count - 1
 				strmp4 = Right(matches3(i).Value,Len(matches3(i).Value)-12)
+				If getStatusXMLHTTP(strmp4) = "403" Then strmp4 = strmp4 & "?_nc_ht=scontent-nrt1-1.cdninstagram.com"
+				If getStatusXMLHTTP(strmp4) = "403" Then strmp4 = strmp4 & "?_nc_ht=scontent-sea1-1.cdninstagram.com"
 				If Not tempDicmp4.Exists(strmp4) Then
 					Call tempDicmp4.Add(strmp4,"")
 					response.Write "<video autoplay loop muted controls><source src="""&strmp4&""" type=""video/mp4"" /></video>"
