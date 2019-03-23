@@ -91,13 +91,16 @@
 		Dim resText2
 		Dim i,j
 		Dim strjpg,strmp4
+		Dim parts
+'response.write codeId
 		resText2 = getXMLHTTP("https://www.instagram.com/p/"&codeId)
+'response.write resText2
 		Set matches2 = regEx2.Execute(resText2)
 		If matches2.Count <> 0 Then
 			For i = 0 To matches2.Count - 1
 				strjpg = matches2(i).Value
-				If getStatusXMLHTTP(strjpg) = "403" Then strjpg = matches2(i).Value & "?_nc_ht=scontent-nrt1-1.cdninstagram.com"
-				If getStatusXMLHTTP(strjpg) = "403" Then strjpg = matches2(i).Value & "?_nc_ht=scontent-sea1-1.cdninstagram.com"
+				parts = Mid(strjpg,18,6)
+				If getStatusXMLHTTP(strjpg) = "403" Then strjpg = matches2(i).Value & "?_nc_ht=scontent-"&parts&".cdninstagram.com"
 				If Not Len(strjpg)>210 And Instr(strjpg,"/e35/") > 0 And Instr(strjpg,"640x640") = 0 And Instr(strjpg,"750x750") = 0 Then
 					If Not tempDicjpg.Exists(strjpg) Then
 						Call tempDicjpg.Add(strjpg,"")
@@ -111,8 +114,8 @@
 		If matches3.Count <> 0 Then
 			For i = 0 To matches3.Count - 1
 				strmp4 = Right(matches3(i).Value,Len(matches3(i).Value)-12)
-				If getStatusXMLHTTP(strmp4) = "403" Then strmp4 = Right(matches3(i).Value,Len(matches3(i).Value)-12) & "?_nc_ht=scontent-nrt1-1.cdninstagram.com"
-				If getStatusXMLHTTP(strmp4) = "403" Then strmp4 = Right(matches3(i).Value,Len(matches3(i).Value)-12) & "?_nc_ht=scontent-sea1-1.cdninstagram.com"
+				parts = Mid(strmp4,18,6)
+				If getStatusXMLHTTP(strmp4) = "403" Then strmp4 = Right(matches3(i).Value,Len(matches3(i).Value)-12) & "?_nc_ht=scontent-"&parts&".cdninstagram.com"
 				If Not tempDicmp4.Exists(strmp4) Then
 					Call tempDicmp4.Add(strmp4,"")
 					response.Write "<video autoplay loop muted controls><source src="""&strmp4&""" type=""video/mp4"" /></video>"
