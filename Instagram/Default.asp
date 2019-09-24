@@ -19,7 +19,7 @@
 </form>
 <%
 ' *************************** ***************************
-' Instagramスクレイピング 仕様 20190214
+' Instagramスクレイピング 仕様 20190924
 ' *************************** ***************************
 
 	If instagramId="" Then Response.End
@@ -42,7 +42,7 @@
 
 	' 正規表現3 動画用
 	Set regEx3 = CreateObject("VBScript.RegExp")
-	regEx3.Pattern = "video_url"":""https://scontent.*?\.mp4"
+	regEx3.Pattern = "video_url"":""https://scontent.*\.mp4.*?"""
 	regEx3.IgnoreCase = False ' 大文字と小文字を区別しない
 	regEx3.Global = True ' 文字列全体を検索
 
@@ -114,8 +114,7 @@
 		If matches3.Count <> 0 Then
 			For i = 0 To matches3.Count - 1
 				strmp4 = Right(matches3(i).Value,Len(matches3(i).Value)-12)
-				parts = Mid(strmp4,18,6)
-				If getStatusXMLHTTP(strmp4) = "403" Then strmp4 = Right(matches3(i).Value,Len(matches3(i).Value)-12) & "?_nc_ht=scontent.cdninstagram.com"
+				strmp4 = replace(strmp4,"\u0026","&")
 				If Not tempDicmp4.Exists(strmp4) Then
 					Call tempDicmp4.Add(strmp4,"")
 					response.Write "<video autoplay loop muted controls><source src="""&strmp4&""" type=""video/mp4"" /></video>"
