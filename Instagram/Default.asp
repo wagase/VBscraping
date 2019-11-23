@@ -19,7 +19,7 @@
 </form>
 <%
 ' *************************** ***************************
-' Instagramスクレイピング 仕様 20190924
+' Instagramスクレイピング 仕様 20191123
 ' *************************** ***************************
 
 	If instagramId="" Then Response.End
@@ -36,7 +36,7 @@
 
 	' 正規表現2 画像用
 	Set regEx2 = CreateObject("VBScript.RegExp")
-	regEx2.Pattern = "https://scontent-.*?\.jpg"
+	regEx2.Pattern = "https://scontent-.*?\.jpg.*?"",""display_resources"""
 	regEx2.IgnoreCase = False ' 大文字と小文字を区別しない
 	regEx2.Global = True ' 文字列全体を検索
 
@@ -92,20 +92,21 @@
 		Dim i,j
 		Dim strjpg,strmp4
 		Dim parts
-'response.write codeId
 		resText2 = getXMLHTTP("https://www.instagram.com/p/"&codeId)
-'response.write resText2
 		Set matches2 = regEx2.Execute(resText2)
 		If matches2.Count <> 0 Then
 			For i = 0 To matches2.Count - 1
 				strjpg = matches2(i).Value
 				parts = Mid(strjpg,18,6)
-				If getStatusXMLHTTP(strjpg) = "403" Then strjpg = matches2(i).Value & "?_nc_ht=scontent-"&parts&".cdninstagram.com"
-				If Not Len(strjpg)>210 And Instr(strjpg,"/e35/") > 0 And Instr(strjpg,"640x640") = 0 And Instr(strjpg,"750x750") = 0 Then
-					If Not tempDicjpg.Exists(strjpg) Then
-						Call tempDicjpg.Add(strjpg,"")
-						response.Write "<img src="""&strjpg&""" title="""&strjpg&""">"
-						response.Flush
+				if Not Len(strjpg)>250 Then
+					strjpg = replace(strjpg,"\u0026","&")
+					strjpg = Left(strjpg,Len(strjpg)-21)
+					If Not Len(strjpg)>210 And Instr(strjpg,"/e35/") > 0 And Instr(strjpg,"640x640") = 0 And Instr(strjpg,"750x750") = 0 Then
+						If Not tempDicjpg.Exists(strjpg) Then
+							Call tempDicjpg.Add(strjpg,"")
+							response.Write "<img src="""&strjpg&""" title="""&strjpg&""">"
+							response.Flush
+						End If
 					End If
 				End If
 			Next
