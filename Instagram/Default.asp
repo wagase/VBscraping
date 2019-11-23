@@ -36,7 +36,7 @@
 
 	' 正規表現2 画像用
 	Set regEx2 = CreateObject("VBScript.RegExp")
-	regEx2.Pattern = "https://scontent-.*?\.jpg.*?"",""display_resources"""
+	regEx2.Pattern = "https:\/\/scontent-.*?\.jpg.*?"",""config_width"""
 	regEx2.IgnoreCase = False ' 大文字と小文字を区別しない
 	regEx2.Global = True ' 文字列全体を検索
 
@@ -100,8 +100,8 @@
 				parts = Mid(strjpg,18,6)
 				if Not Len(strjpg)>250 Then
 					strjpg = replace(strjpg,"\u0026","&")
-					strjpg = Left(strjpg,Len(strjpg)-21)
-					If Not Len(strjpg)>210 And Instr(strjpg,"/e35/") > 0 And Instr(strjpg,"640x640") = 0 And Instr(strjpg,"750x750") = 0 Then
+					strjpg = Left(strjpg,Len(strjpg)-16)
+					If Instr(strjpg,"/e35/") > 0 And Instr(strjpg,"640x640") = 0 And Instr(strjpg,"750x750") = 0 Then
 						If Not tempDicjpg.Exists(strjpg) Then
 							Call tempDicjpg.Add(strjpg,"")
 							response.Write "<img src="""&strjpg&""" title="""&strjpg&""">"
