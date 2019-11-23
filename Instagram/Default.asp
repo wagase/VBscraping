@@ -98,7 +98,7 @@
 			For i = 0 To matches2.Count - 1
 				strjpg = matches2(i).Value
 				parts = Mid(strjpg,18,6)
-				if Not Len(strjpg)>250 Then
+				if Not Len(strjpg)>280 Then
 					strjpg = replace(strjpg,"\u0026","&")
 					strjpg = Left(strjpg,Len(strjpg)-16)
 					If Instr(strjpg,"/e35/") > 0 And Instr(strjpg,"640x640") = 0 And Instr(strjpg,"750x750") = 0 Then
